@@ -15,10 +15,10 @@ This method uses the pre-built image from GitHub Container Registry.
     ```bash
     docker compose up -d
     ```
-    *Note: The first run will download the image and then download necessary client data (maps, dbc, etc.) inside the container, which may take some time.*
+    *Note: The first run will be significantly longer as it compiles the server binaries and downloads client data. Subsequent runs will be faster.*
 
 2.  **Monitor Progress:**
-    You can check the logs to see the startup progress:
+    You can check the logs to see the compilation and startup progress:
     ```bash
     docker compose logs -f
     ```
@@ -65,10 +65,10 @@ auth
 The setup persists data in the `./acore-data` directory on your host machine:
 
 -   `./acore-data/mysql`: Database files.
--   `./acore-data/etc`: Configuration files (`worldserver.conf`, `playerbots.conf`, etc.).
--   `./acore-data/data`: Client data (maps, mmaps, vmaps, dbc).
+-   `./acore-data/build`: Compilation build files (speeds up recompilation).
+-   `./acore-data/env`: Contains binaries (`bin`), configuration (`etc`), and data (`data`).
 
-You can edit configuration files in `./acore-data/etc` on your host machine and restart the container to apply changes.
+You can edit configuration files in `./acore-data/env/dist/etc` on your host machine and restart the container to apply changes.
 
 ## Database Access
 

@@ -24,17 +24,9 @@ RUN git clone https://github.com/mod-playerbots/azerothcore-wotlk.git . --branch
 WORKDIR /azerothcore/modules
 RUN git clone https://github.com/mod-playerbots/mod-playerbots.git mod-playerbots --branch=master
 
-# Build AzerothCore
+# Build setup (Compilation moved to entrypoint.sh)
 WORKDIR /azerothcore
-# We skip install-deps script as we installed dependencies manually above, 
-# but we might miss some specific ones. Let's run it just in case, but prevent it from running apt update if possible.
-# The script usually detects installed packages.
-# However, to avoid interaction, we trust our manual install + the script.
-# We need to compile.
-RUN mkdir build && cd build && \
-    cmake ../ -DCMAKE_INSTALL_PREFIX=/azerothcore/env/dist -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_CXX_COMPILER=/usr/bin/clang++ -DWITH_WARNINGS=1 -DTOOLS_BUILD=all -DSCRIPTS=static -DMODULES=static && \
-    make -j $(nproc) && \
-    make install
+RUN mkdir -p build
 
 # Setup Aliases
 RUN echo "alias wow='tmux attach -t world-session'" >> /root/.bashrc && \

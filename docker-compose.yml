@@ -10,8 +10,8 @@ services:
       - "3306:3306" # MySQL
     volumes:
       - ./acore-data/mysql:/var/lib/mysql
-      - ./acore-data/etc:/azerothcore/env/dist/etc
-      - ./acore-data/data:/azerothcore/env/dist/data
+      - ./acore-data/build:/azerothcore/build
+      - ./acore-data/env:/azerothcore/env
     tty: true
     stdin_open: true
     environment:

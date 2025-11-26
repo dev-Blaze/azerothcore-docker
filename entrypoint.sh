@@ -3,6 +3,19 @@ set -e
 
 echo "Starting AzerothCore Container Entrypoint..."
 
+# --- Compilation ---
+BIN_DIR="/azerothcore/env/dist/bin"
+if [ ! -f "$BIN_DIR/worldserver" ] || [ "$RECOMPILE" = "true" ]; then
+    echo "Compiling AzerothCore... (This may take a while)"
+    cd /azerothcore/build
+    cmake ../ -DCMAKE_INSTALL_PREFIX=/azerothcore/env/dist -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_CXX_COMPILER=/usr/bin/clang++ -DWITH_WARNINGS=1 -DTOOLS_BUILD=all -DSCRIPTS=static -DMODULES=static
+    make -j $(nproc)
+    make install
+    echo "Compilation complete."
+else
+    echo "Binaries found. Skipping compilation."
+fi
+
 # --- MySQL Setup ---
 echo "Starting MySQL..."
 # Ensure MySQL directories exist and have correct permissions
