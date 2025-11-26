@@ -1,0 +1,18 @@
+services:
+  acore:
+    # build: .
+    image: ghcr.io/dev-blaze/azerothcore-docker:main
+    container_name: azerothcore
+    restart: unless-stopped
+    ports:
+      - "3724:3724" # Auth Server
+      - "8085:8085" # World Server
+      - "3306:3306" # MySQL
+    volumes:
+      - ./acore-data/mysql:/var/lib/mysql
+      - ./acore-data/etc:/azerothcore/env/dist/etc
+      - ./acore-data/data:/azerothcore/env/dist/data
+    tty: true
+    stdin_open: true
+    environment:
+      - TERM=xterm-256color
