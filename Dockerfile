@@ -33,7 +33,12 @@ RUN echo "alias wow='tmux attach -t world-session'" >> /root/.bashrc && \
     echo "alias auth='tmux attach -t auth-session'" >> /root/.bashrc && \
     echo "alias stop='tmux kill-server'" >> /root/.bashrc && \
     echo "alias pb='nano /azerothcore/env/dist/etc/modules/playerbots.conf'" >> /root/.bashrc && \
-    echo "alias world='nano /azerothcore/env/dist/etc/worldserver.conf'" >> /root/.bashrc
+    echo "alias world='nano /azerothcore/env/dist/etc/worldserver.conf'" >> /root/.bashrc && \
+    echo "alias compile='cd /azerothcore; ./acore.sh compiler all'" >> /root/.bashrc && \
+    echo "alias build='cd /azerothcore; ./acore.sh compiler build'" >> /root/.bashrc && \
+    echo "alias update='cd /azerothcore; git pull; cd /azerothcore/modules/mod-playerbots; git pull'" >> /root/.bashrc && \
+    echo "alias updatemods='cd /azerothcore/modules; find . -mindepth 1 -maxdepth 1 -type d -print -exec git -C {} pull \;'" >> /root/.bashrc && \
+    echo "alias ah='nano /azerothcore/env/dist/etc/modules/mod_ahbot.conf'" >> /root/.bashrc
 
 # Copy Entrypoint
 COPY entrypoint.sh /entrypoint.sh

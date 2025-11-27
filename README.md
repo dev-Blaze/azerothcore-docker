@@ -69,6 +69,11 @@ The following convenient aliases are available when you access the container she
 -   `stop`: Stop the servers (kills tmux server).
 -   `pb`: Edit `playerbots.conf` with nano.
 -   `world`: Edit `worldserver.conf` with nano.
+-   `compile`: Run the AzerothCore compilation (`./acore.sh compiler all`).
+-   `build`: Run the AzerothCore build (`./acore.sh compiler build`).
+-   `update`: Git pull the main repo and playerbots module.
+-   `updatemods`: Update all modules in the `modules` directory.
+-   `ah`: Edit `mod_ahbot.conf` with nano.
 
 ## Configuration & Data
 
