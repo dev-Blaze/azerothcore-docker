@@ -60,6 +60,16 @@ docker exec -it azerothcore bash
 auth
 ```
 
+### Shell Aliases
+
+The following convenient aliases are available when you access the container shell (`docker exec -it azerothcore bash`):
+
+-   `wow`: Attach to the **World Server** console (tmux session).
+-   `auth`: Attach to the **Auth Server** console (tmux session).
+-   `stop`: Stop the servers (kills tmux server).
+-   `pb`: Edit `playerbots.conf` with nano.
+-   `world`: Edit `worldserver.conf` with nano.
+
 ## Configuration & Data
 
 The setup persists data in the `./acore-data` directory on your host machine:
