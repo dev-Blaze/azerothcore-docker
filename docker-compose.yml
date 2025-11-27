@@ -1,23 +1,39 @@
 services:
   acore:
+    # Use the pre-built image from GitHub
+    # To build from source locally, uncomment 'build: .' and comment 'image: ...'
     # build: .
     image: ghcr.io/dev-blaze/azerothcore-docker:main
     container_name: azerothcore
     restart: unless-stopped
+    
+    # Expose necessary ports
     ports:
-      - "3724:3724" # Auth Server
-      - "8085:8085" # World Server
-      - "3306:3306" # MySQL
+      - "3724:3724" # Auth Server (Login)
+      - "8085:8085" # World Server (Game)
+      - "3306:3306" # MySQL Database (Optional: for external tools/backups)
+
+    # Persist data to the host machine
     volumes:
-      - ./acore-data/mysql:/var/lib/mysql
-      - ./acore-data/build:/azerothcore/build
-      - ./acore-data/env:/azerothcore/env
-      - ./acore-data/modules:/modules-mount
+      - ./acore-data/mysql:/var/lib/mysql            # Database files
+      - ./acore-data/build:/azerothcore/build        # Build cache (speeds up recompile)
+      - ./acore-data/env:/azerothcore/env            # Server binaries, configs, and data
+      - ./acore-data/modules:/modules-mount          # Custom modules drop-in folder
+
+    # Enable interactive mode (required for tmux sessions to work properly)
     tty: true
     stdin_open: true
+
+    # Environment variables configuration
     environment:
-      - TERM=xterm-256color
+      - TERM=xterm-256color                        # Ensure proper terminal colors
+      
+      # Remote MySQL User Configuration (Optional)
+      # Define these in .env to allow external database access (e.g., for Velld backup)
       - MYSQL_REMOTE_USER=${MYSQL_REMOTE_USER:-}
       - MYSQL_REMOTE_PASSWORD=${MYSQL_REMOTE_PASSWORD:-}
       - MYSQL_REMOTE_IP=${MYSQL_REMOTE_IP:-}
+      
+      # Mods Configuration (Optional)
+      # Space-separated list of git URLs to auto-install
       - AC_MODS=${AC_MODS:-}
