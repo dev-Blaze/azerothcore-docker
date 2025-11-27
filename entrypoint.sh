@@ -57,6 +57,20 @@ GRANT ALL PRIVILEGES ON \`acore_auth\` . * TO 'acore'@'localhost' WITH GRANT OPT
 FLUSH PRIVILEGES;
 EOF
 
+# --- Remote User Configuration ---
+if [ -n "$MYSQL_REMOTE_USER" ] && [ -n "$MYSQL_REMOTE_PASSWORD" ] && [ -n "$MYSQL_REMOTE_IP" ]; then
+    echo "Configuring remote MySQL user: $MYSQL_REMOTE_USER for IP: $MYSQL_REMOTE_IP"
+    mysql -u root <<EOF
+CREATE USER IF NOT EXISTS '$MYSQL_REMOTE_USER'@'$MYSQL_REMOTE_IP' IDENTIFIED BY '$MYSQL_REMOTE_PASSWORD';
+GRANT ALL PRIVILEGES ON \`acore_world\` . * TO '$MYSQL_REMOTE_USER'@'$MYSQL_REMOTE_IP';
+GRANT ALL PRIVILEGES ON \`acore_characters\` . * TO '$MYSQL_REMOTE_USER'@'$MYSQL_REMOTE_IP';
+GRANT ALL PRIVILEGES ON \`acore_auth\` . * TO '$MYSQL_REMOTE_USER'@'$MYSQL_REMOTE_IP';
+FLUSH PRIVILEGES;
+EOF
+else
+    echo "Remote MySQL configuration skipped (Env vars not set)."
+fi
+
 # --- Configuration Files ---
 echo "Checking configuration files..."
 CONF_DIR="/azerothcore/env/dist/etc"

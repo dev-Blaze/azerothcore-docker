@@ -77,6 +77,26 @@ The MySQL server is exposed on port `3306`.
 -   **Password:** `acore`
 -   **Database:** `acore_world`, `acore_characters`, `acore_auth`
 
+### Remote MySQL Access
+
+To allow a remote user (e.g., from your host machine or another container) to access the database, you can configure it using a `.env` file.
+
+1.  Copy `.env.example` to `.env`:
+    ```bash
+    cp .env.example .env
+    ```
+2.  Edit `.env` and uncomment/set the variables:
+    ```ini
+    MYSQL_REMOTE_USER=myuser
+    MYSQL_REMOTE_PASSWORD=mypassword
+    MYSQL_REMOTE_IP=192.168.1.5  # IP address allowed to connect
+    # Use '%' for any IP (not recommended for production)
+    ```
+3.  Restart the container:
+    ```bash
+    docker compose up -d
+    ```
+
 ## Container Details
 
 -   **OS:** Ubuntu 24.04

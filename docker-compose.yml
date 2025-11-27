@@ -16,3 +16,6 @@ services:
     stdin_open: true
     environment:
       - TERM=xterm-256color
+      - MYSQL_REMOTE_USER=${MYSQL_REMOTE_USER:-}
+      - MYSQL_REMOTE_PASSWORD=${MYSQL_REMOTE_PASSWORD:-}
+      - MYSQL_REMOTE_IP=${MYSQL_REMOTE_IP:-}
