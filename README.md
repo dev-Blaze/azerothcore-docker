@@ -97,6 +97,26 @@ To allow a remote user (e.g., from your host machine or another container) to ac
     docker compose up -d
     ```
 
+### Adding Custom Mods
+
+You can easily add extra modules (like Transmog, Autobalance, etc.) to your server.
+
+**Method 1: Using `.env` (Recommended)**
+
+1.  Add the `AC_MODS` variable to your `.env` file with a space-separated list of Git URLs:
+    ```ini
+    AC_MODS=https://github.com/azerothcore/mod-transmog.git https://github.com/azerothcore/mod-autobalance.git
+    ```
+2.  Restart the container. The startup script will clone the mods and automatically trigger a recompilation of the core.
+    ```bash
+    docker compose up -d
+    ```
+
+**Method 2: Using Volume Mount**
+
+1.  Place your mod directories inside `./acore-data/modules` on your host machine.
+2.  Restart the container. The script will detect the new files and recompile the core.
+
 ## Container Details
 
 -   **OS:** Ubuntu 24.04

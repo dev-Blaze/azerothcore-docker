@@ -12,6 +12,7 @@ services:
       - ./acore-data/mysql:/var/lib/mysql
       - ./acore-data/build:/azerothcore/build
       - ./acore-data/env:/azerothcore/env
+      - ./acore-data/modules:/modules-mount
     tty: true
     stdin_open: true
     environment:
@@ -19,3 +20,4 @@ services:
       - MYSQL_REMOTE_USER=${MYSQL_REMOTE_USER:-}
       - MYSQL_REMOTE_PASSWORD=${MYSQL_REMOTE_PASSWORD:-}
       - MYSQL_REMOTE_IP=${MYSQL_REMOTE_IP:-}
+      - AC_MODS=${AC_MODS:-}

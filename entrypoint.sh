@@ -3,9 +3,39 @@ set -e
 
 echo "Starting AzerothCore Container Entrypoint..."
 
+# --- Install Mods ---
+NEED_RECOMPILE=false
+
+# 1. From Environment Variable
+if [ -n "$AC_MODS" ]; then
+    echo "Installing mods from AC_MODS..."
+    cd /azerothcore/modules
+    for repo in $AC_MODS; do
+        mod_name=$(basename "$repo" .git)
+        if [ ! -d "$mod_name" ]; then
+            echo "Cloning mod: $mod_name"
+            if git clone "$repo" "$mod_name"; then
+                NEED_RECOMPILE=true
+            fi
+        else
+            echo "Mod $mod_name already exists."
+        fi
+    done
+fi
+
+# 2. From Volume
+if [ -d "/modules-mount" ]; then
+    # If directory is not empty
+    if [ "$(ls -A /modules-mount)" ]; then
+        echo "Installing mods from /modules-mount..."
+        # Copy new mods, do not overwrite existing ones
+        cp -rn /modules-mount/* /azerothcore/modules/ && NEED_RECOMPILE=true || true
+    fi
+fi
+
 # --- Compilation ---
 BIN_DIR="/azerothcore/env/dist/bin"
-if [ ! -f "$BIN_DIR/worldserver" ] || [ "$RECOMPILE" = "true" ]; then
+if [ ! -f "$BIN_DIR/worldserver" ] || [ "$RECOMPILE" = "true" ] || [ "$NEED_RECOMPILE" = "true" ]; then
     echo "Compiling AzerothCore... (This may take a while)"
     cd /azerothcore/build
     cmake ../ -DCMAKE_INSTALL_PREFIX=/azerothcore/env/dist -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_CXX_COMPILER=/usr/bin/clang++ -DWITH_WARNINGS=1 -DTOOLS_BUILD=all -DSCRIPTS=static -DMODULES=static
