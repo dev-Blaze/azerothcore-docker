@@ -132,6 +132,64 @@ You can easily add extra modules (like Transmog, Autobalance, etc.) to your serv
 1.  Place your mod directories inside `./acore-data/modules` on your host machine.
 2.  Restart the container. The script will detect the new files and recompile the core.
 
+## Database Backups with Velld
+
+You can use [Velld](https://github.com/dendianugerah/velld), a self-hosted database backup tool, to automate backups of your AzerothCore database. The "Remote MySQL Access" feature allows Velld to connect to the database container.
+
+### Setting up Velld
+
+1.  **Update `.env`**: Add the following configuration for Velld to your `.env` file:
+    ```ini
+    # Velld Configuration
+    NEXT_PUBLIC_API_URL=http://localhost:8080
+    JWT_SECRET=your_jwt_secret_here_32_chars  # Run: openssl rand -hex 32
+    ENCRYPTION_KEY=your_enc_key_here_64_chars # Run: openssl rand -hex 32
+    ADMIN_USERNAME_CREDENTIAL=admin
+    ADMIN_PASSWORD_CREDENTIAL=password
+    ALLOW_REGISTER=false
+    ```
+
+2.  **Update `docker-compose.yml`**: Add the Velld services to your `docker-compose.yml` file so they share the same network:
+    ```yaml
+    services:
+      # ... existing acore service ...
+
+      velld-api:
+        image: ghcr.io/dendianugerah/velld/api:latest
+        ports:
+          - "8080:8080"
+        env_file:
+          - .env
+        volumes:
+          - ./acore-data/velld-data:/app/data
+          - ./acore-data/backups:/app/backups
+        restart: unless-stopped
+
+      velld-web:
+        image: ghcr.io/dendianugerah/velld/web:latest
+        ports:
+          - "3000:3000"
+        environment:
+          NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+          ALLOW_REGISTER: ${ALLOW_REGISTER}
+        depends_on:
+          - velld-api
+        restart: unless-stopped
+    ```
+
+3.  **Restart**: Run `docker compose up -d`.
+
+4.  **Configure Backup**:
+    *   Open Velld at `http://localhost:3000`.
+    *   Login with the credentials defined in `.env`.
+    *   Create a new **Connection**:
+        *   **Type**: MySQL
+        *   **Host**: `azerothcore` (The container name)
+        *   **Port**: `3306`
+        *   **User**: The value of `MYSQL_REMOTE_USER`
+        *   **Password**: The value of `MYSQL_REMOTE_PASSWORD`
+        *   **Database**: `acore_world` (or `acore_characters`, `acore_auth`)
+
 ## Container Details
 
 -   **OS:** Ubuntu 24.04
